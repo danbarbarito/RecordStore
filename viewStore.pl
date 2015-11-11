@@ -10,6 +10,18 @@ my $store_number = param("store_number")||"";
 
 print qq(<!DOCTYPE html>);
 
+open(DB_INFO, "/home/da21066/public_html/SE/db_info");
+my $count = 0;
+my $username = "";
+my $password = "";
+while(<DB_INFO>){
+    if ($count == 0) {
+	$username = "$_";
+    }    if ($count == 1) {
+	$password = "$_";
+    }
+    $count = $count + 1;
+}
 
 if ($store_number) {
     print qq(<br />Getting information for Store #$store_number....<br />);
@@ -21,7 +33,22 @@ print qq(</body></html>);
 sub viewStore {
 
 my $dsn =  "dbi:mysql:andrewolsen:panther.adelphi.edu";
-my $dbh=DBI->connect($dsn, "andrewolsen", "g6ajW8r2") or die "Error opening database: $DBI::errstr\n";
+my $username = "";
+my $password = "";
+my $count = 0;
+my $filename = "/home/da21066/public_html/SE/db_info";
+open(my $fh, "<:encoding(UTF-8)", $filename) or print "Cant open db_info";
+while(my $row = <$fh>) {
+    chomp($row);
+    if ($count == 0) {
+	$username = "$row";
+    }
+    if ($count == 1) {
+	$password = "$row";
+    }
+    $count = $count + 1;
+}
+my $dbh=DBI->connect($dsn, $username, $password) or die "Error opening database: $DBI::errstr\n";
 
 my $stmt = "INSERT into stores (Number, Address, Manager) values ($store_number, '$address', '$manager')";
 
