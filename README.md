@@ -12,5 +12,3 @@ Software engineering project
 
 * Java GUI executes Perl Script
 * Perl Script connects to MySQL database
-
-[Script Link]()
