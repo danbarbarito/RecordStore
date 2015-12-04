@@ -6,7 +6,10 @@ use warnings;
 use CGI qw/:standard/;
 use DBI;
 
+
 my $store_number = param("store_number")||"";
+my $address = param("address")||"";
+my $manager = param("manager")||"";
 
 print qq(<!DOCTYPE html>);
 
@@ -24,7 +27,7 @@ while(<DB_INFO>){
 }
 
 if ($store_number) {
-    print qq(<br />Getting information for Store #$store_number....<br />);
+    print qq(<br />Updating Store #$store_number....<br />);
     viewStore($store_number);
 }
 
@@ -50,7 +53,7 @@ while(my $row = <$fh>) {
 }
 my $dbh=DBI->connect($dsn, $username, $password) or die "Error opening database: $DBI::errstr\n";
 
-my $stmt = "SELECT * FROM stores WHERE Store='$store_number'";
+my $stmt = "UPDATE stores SET Address='$address',Manager='$manager' WHERE Store='$store_number'";
 my $sth=$dbh->prepare($stmt);
 
 my @store_info;
@@ -61,7 +64,7 @@ while(@store_info = $sth->fetchrow_array()) {
     my $sn = $store_info[0];
     my $address = $store_info[1];
     my $manager = $store_info[2];
-    print qq(<h2>Store #$sn is located at $address and is managed by $manager</h2>);
+    print qq(<h2>Store #$sn updated: it is located at $address and is managed by $manager);
 }
 
 if($sth->rows == 0) {

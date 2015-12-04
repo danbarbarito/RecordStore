@@ -24,13 +24,13 @@ while(<DB_INFO>){
 }
 
 if ($store_number) {
-    print qq(<br />Getting information for Store #$store_number....<br />);
-    viewStore($store_number);
+    print qq(<br />Getting orders for Store #$store_number....<br />);
+    viewOrders($store_number);
 }
 
 print qq(</body></html>);
 
-sub viewStore {
+sub viewOrders {
 
 my $dsn =  "dbi:mysql:andrewolsen:panther.adelphi.edu";
 my $username = "";
@@ -50,22 +50,24 @@ while(my $row = <$fh>) {
 }
 my $dbh=DBI->connect($dsn, $username, $password) or die "Error opening database: $DBI::errstr\n";
 
-my $stmt = "SELECT * FROM stores WHERE Store='$store_number'";
+my $stmt = "SELECT * from orders WHERE Store = '$store_number'";
 my $sth=$dbh->prepare($stmt);
 
 my @store_info;
 
 $sth->execute();
-
+print qq(<h2>);
 while(@store_info = $sth->fetchrow_array()) {
-    my $sn = $store_info[0];
-    my $address = $store_info[1];
-    my $manager = $store_info[2];
-    print qq(<h2>Store #$sn is located at $address and is managed by $manager</h2>);
+    my $order_number = $store_info[0];
+    my $date = $store_info[1];
+    my $store = $store_info[2];
+    my $price = $store_info[3];
+    print qq(Order #$order_number: $date, $price <br />);
 }
+print qq(</h2>);
 
 if($sth->rows == 0) {
-    print qq(<b> No store found <b/>);
+    print qq(<b> No orders found <b/>);
 
 }
 

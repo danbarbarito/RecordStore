@@ -40,9 +40,10 @@ while(my $row = <$fh>) {
 
 my $dbh=DBI->connect($dsn, $username, $password) or print "Error opening database: $DBI::errstr\n";
 
-my $stmt = "INSERT into stores (Number, Address, Manager) values ($store_number, '$address', '$manager')";
+my $stmt = "INSERT into stores (Store, Address, Manager) values ($store_number, '$address', '$manager')";
 
 my $sth=$dbh->prepare($stmt);
+
 
 if($sth->execute()) {
     print qq(<br />Success!<br />);
